@@ -13,7 +13,7 @@ Angular is a TypeScript-based open-source front-end web application framework de
 
 ## 2.  Angular Architecture
 
-Angular is a component-based framework for building scalable web applications. It follows a modular architecture and uses TypeScript for development
+> Angular is a component-based framework for building scalable web applications. It follows a modular architecture and uses TypeScript for development
 
 ### 1.Module (NgModule)
 
@@ -76,7 +76,7 @@ A template defines the HTML view of a component. Templates are a key part of Ang
 
 `ng generate service my-service`
 
-#### 4. Dependency Injection
+#### 5. Dependency Injection
 
 - Dependency injection (DI) is a software design pattern that implements the principle of Inversion of Control (IoC)
 - Dependency Injection system manages the dependencies between various parts of an application, providing loose coupling(a design principle where software components have minimal dependencies on each other, meaning changes in one component are less likely to affect others) and modular development.
@@ -91,7 +91,7 @@ Angular provides a set of eight core lifecycle hooks that can be implemented in 
 
 ### ngOnInit():
 - Called after the initial ngOnChanges() (or first if no inputs are present), 
-- used for component initialization logic, such as fetching initial data from services or setting up subscriptions.
+- Used for component initialization logic, such as fetching initial data from services or setting up subscriptions.
 
 ### ngDoCheck():
 - This hook is triggered during every change detection cycle,
@@ -277,6 +277,82 @@ import { Injectable } from '@angular/core';
 - TrackBy in `*ngFor`
 - OnPush Change Detection
 - Avoid memory leaks (unsubscribe Observables)
+
+# 🌿 Ivy in Angular
+
+> Ivy is Angular’s next-generation compilation and rendering engine, introduced in Angular 9. It makes applications smaller, faster, and easier to debug.
+
+---
+
+## 🔍 What is Ivy?
+
+**Ivy** is the **default rendering engine** in Angular (v9 and above). It replaces the older **View Engine** and brings several improvements in **performance, debugging, and bundle size optimization**.
+
+---
+
+## 🧩 Key Features of Ivy
+
+| Feature                  | Description                                                                 |
+|--------------------------|-----------------------------------------------------------------------------|
+| 🌱 **Smaller Bundle Sizes**    | Ivy generates less code and tree-shakes unused parts, reducing final bundle size. |
+| 🚀 **Faster Compilation**     | Compiles components more efficiently with better change detection.         |
+| 🛠 **Improved Debugging**     | Enables template-level stack traces for easier debugging.                  |
+| 🧹 **Better Tree Shaking**    | Unused code is removed during build, making the app lighter.               |
+| 🔄 **Incremental Builds**     | Only changed files are recompiled, speeding up development.                |
+| 📦 **Locality Principle**     | Each component is compiled in isolation, improving lazy loading and AOT.    |
+
+---
+
+## 🆚 View Engine vs Ivy
+
+| Aspect               | View Engine                           | Ivy                                      |
+|----------------------|----------------------------------------|-------------------------------------------|
+| **Bundle Size**       | Larger                                | Smaller                                  |
+| **Compilation Speed** | Slower                                | Faster with incremental builds           |
+| **Debugging**         | Complex and indirect                  | Easier with template-level stack traces  |
+| **Dynamic Components**| Requires boilerplate                  | Simplified with `ComponentFactory`       |
+| **Code Output**       | Complex Angular-specific code         | Human-readable JavaScript                |
+
+---
+
+## ⚡ How Ivy Improves Performance
+
+### 1. Tree Shaking Optimization  
+Removes unused components, directives, pipes during production builds.
+
+### 2. Smaller Component Factories  
+Generates more compact factories closer to developer-authored code.
+
+### 3. Lazy Loading Efficiency  
+Improves loading time of modules/components that are not needed immediately.
+
+### 4. Optimized Change Detection  
+Runs only necessary checks — reducing CPU cycles during DOM updates.
+
+### 5. Faster Build Times  
+Using the **locality principle**, Ivy compiles each component independently.
+
+---
+
+## ✅ Conclusion
+
+> With Ivy, Angular becomes **faster**, **smaller**, and **easier to debug** — significantly enhancing both **developer experience** and **runtime performance**.
+
+---
+
+## 📚 Additional Resources
+
+- 📖 [Angular Ivy - Official Guide](https://angular.io/guide/ivy)
+- 📘 [Ivy in Depth (Angular Blog)](https://blog.angular.io/)
+- 🧠 [AOT Compilation vs Ivy](https://angular.io/guide/aot-compiler)
+
+---
+
+## 🗂 Suggested Folder Placement
+
+If you're organizing Angular concepts on GitHub, create the structure like:
+
+
 
 ---
 
