@@ -102,8 +102,8 @@ This document explains the key differences between **AngularJS (v1.x)** and **An
 
 > **Legacy Bundle (ES5):** For older browsers that don’t support modern JavaScript.
 
-- Create two versions of your main.js, polyfills.js, etc.
-- Add <script> tags with the correct attributes (type="module" and nomodule") in index.html.
+  - Create two versions of your main.js, polyfills.js, etc.
+  - Add <script> tags with the correct attributes (type="module" and nomodule") in index.html.
 
 ```
 <script type="module" src="main-es2015.js"></script>
@@ -824,85 +824,631 @@ handleConditionalValidation() {
 
 #### ✅ Answer:
 - A Single Page Application (SPA) is a web application that loads a single HTML page and dynamically updates the content as the user interacts with the app, without refreshing the entire page.
+- Angular uses its **RouterModule, routerLink** to implement it
+- Loading components dynamically inside a **<router-outlet>** without refreshing the page.
 ----
-## 📌 Question 43:
+### 📌 Question 43: What is a router outlet in Angular?
 
-### ✅ Answer:
+#### ✅ Answer:
+- **router-outlet** is a directive that acts as a placeholder in a component's template.
+-  Used to dynamically load different components based on the current URL route.
+- Use build single-page applications where different parts of the app can change without reloading the entire page
+- Router outlet is install using `ng add @angular/router` librabry
 ----
-## 📌 Question 44:
+### 📌 Question 44 : What is routerLink and how is it used in Angular?
 
-### ✅ Answer:
-----
-## 📌 Question 45:
+#### ✅ Answer:
+- `routerLink` is a directive used to bind a route path to an HTML element, typically an <a> tag or a <button>, enabling navigation between components without reloading the page.
 
-### ✅ Answer:
-----
-## 📌 Question 46:
+  **Dynamic Routing**
+```
+<a [routerLink]="['/user', userId]">View User</a>
+```
+**Navigate using Router service in TypeScript**
+```
+import { Router } from '@angular/router';
 
-### ✅ Answer:
-----
-## 📌 Question 47:
+constructor(private router: Router) {}
 
-### ✅ Answer:
-----
-## 📌 Question 48:
+goToAbout() {
+  this.router.navigate(['/about']);
+}
 
-### ✅ Answer:
-----
-## 📌 Question 49:
+```
+---
 
-### ✅ Answer:
-----
-## 📌 Question 50:
+### 📌 Question 45: What is route guarding in Angular?
 
-### ✅ Answer:
-----
-## 📌 Question 51:
+#### ✅ Answer:
+- A **Route Guard** in Angular is a feature that **controls navigation** to and from components based on logic .
+- It helps restrict access to certain routes unless specific conditions are met.
+- such as user authentication, role-based access, unsaved changes, etc.
+- Prevent access to a route unless the user is logged in.
+- Prevent navigation away from a form with unsaved changes.
+- Restrict access to routes based on user roles or permissions.
 
-### ✅ Answer:
 ----
-## 📌 Question 52:
+### 📌 Question 46: What are different types of route guards in Angular?
 
-### ✅ Answer:
-----
-## 📌 Question 53:
+#### ✅ Answer:
 
-### ✅ Answer:
-----
-## 📌 Question 54:
+##### ✅ Types of Route Guards in Angular
 
-### ✅ Answer:
-----
-## 📌 Question 55:
+### 1. `CanActivate`
+- **Purpose**: Determines if a route can be activated.
+- **Use Case**: Prevent access to routes for unauthenticated users.
 
-### ✅ Answer:
-----
-## 📌 Question 56:
+### 2.`CanActivateChild`
+- **Purpose**: Determines if child routes can be activated.
+- **Use Case**: Apply route guard logic to all child routes (e.g., admin section).
 
-### ✅ Answer:
-----
-## 📌 Question 57:
+### 3.`CanDeactivate<T>`
+- **Purpose** : Checks if the user can navigate away from the current route.
+- **Use Case**: Prevent form data loss by alerting the user if they try to leave with unsaved changes.
 
-### ✅ Answer:
-----
-## 📌 Question 58:
+### 4. `CanLoad`
+- **Purpose**: Checks if a lazy-loaded module can be loaded.
+- **Use Case**: Prevent module loading for unauthorized users.
 
-### ✅ Answer:
+### 5. `Resolve<T>`
+- **Purpose**: Fetch data before the route is activated.
+- **Use Case**: Load route-specific data (e.g., user profile) before component initialization.
 ----
-## 📌 Question 59:
+### 📌 Question 47 : How do you implement route guards in Angular?
 
-### ✅ Answer:
-----
-## 📌 Question 60:
+#### ✅ Answer:
+- Use Angular CLI to generate a new guard:
+    `ng generate guard auth/auth`
+- above command will create
+ - ` auth.guard.ts` and  `auth.guard.spec.ts`
+ ```    
+ // auth.guard.ts
+import { Injectable } from '@angular/core';
+import { CanActivate, Router } from '@angular/router';
+import { AuthService } from './auth.service';
 
-### ✅ Answer:
-----
-## 📌 Question 61:
+@Injectable({ providedIn: 'root' })
+export class AuthGuard implements CanActivate {
 
-### ✅ Answer:
-----
-## 📌 Question 62:
+  constructor(private authService: AuthService, private router: Router) {}
 
-### ✅ Answer:
+  canActivate(): boolean {
+    if (this.authService.isLoggedIn()) {
+      return true;
+    } else {
+      this.router.navigate(['/login']);
+      return false;
+    }
+  }
+}
+
+
+// app-routing.module.ts
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { AuthGuard } from './auth/auth.guard';
+
+const routes: Routes = [
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'login',
+    component: LoginComponent
+  },
+  { path: '**', redirectTo: 'login' }
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule {}
+
+
+// app-routing.module.ts
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { AuthGuard } from './auth/auth.guard';
+
+const routes: Routes = [
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'login',
+    component: LoginComponent
+  },
+  { path: '**', redirectTo: 'login' }
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule {}
+
+
+ ```
+
 ----
+### 📌 Question 48 : How do you pass data in Angular routes?
+
+#### ✅ Answer:
+- Prefer route parameters for IDs or required path data.
+- Use query parameters for filters/search/pagination.
+- Use static data for access control or metadata.
+
+1. Using **Route Parameters**
+
+```ts
+// app-routing.module.ts
+{ path: 'user/:id', component: UserComponent }
+
+.html
+<a [routerLink]="['/user', 101]">View User</a>
+
+.ts
+import { ActivatedRoute } from '@angular/router';
+
+constructor(private route: ActivatedRoute) {}
+
+ngOnInit() {
+  const id = this.route.snapshot.paramMap.get('id');
+}
+```
+2. Using **Query Parameters**
+
+- Query parameters are useful for optional values like filters, page numbers, or sorting.
+
+```
+<a [routerLink]="['/products']" [queryParams]="{ category: 'books', sort: 'asc' }">
+  View Books
+</a>
+
+.ts
+import { ActivatedRoute } from '@angular/router';
+
+constructor(private route: ActivatedRoute) {}
+
+ngOnInit() {
+  this.route.queryParamMap.subscribe(params => {
+    const category = params.get('category');
+    const sort = params.get('sort');
+  });
+}
+```
+3. Using **Static Route Data**
+
+- Use this method to associate static configuration or metadata with a route.
+
+```
+{ path: 'admin', component: AdminComponent, data: { role: 'admin' } 
+
+.ts
+import { ActivatedRoute } from '@angular/router';
+
+constructor(private route: ActivatedRoute) {}
+
+ngOnInit() {
+  const role = this.route.snapshot.data['role'];
+}
+```
+
+----
+### 📌 Question 49 : What is a wildcard route in Angular?
+
+#### ✅ Answer:
+- In Angular, a wildcard route is a special type of route used to catch all undefined paths—typically when a user navigates to a URL that doesn’t match any existing route.
+- It acts as a fallback route, often used to show a "404 Not Found" page.
+- ** matches any URL that doesn’t match earlier routes.
+- It should always be the last route in the Routes array, because Angular matches routes in order.
+
+
+----
+### 📌 Question 50 : How do you handle route parameters in Angular?
+
+#### ✅ Answer:
+
+- Route parameters allow you to pass dynamic values (like IDs or names) through the URL.
+- Angular provides the `ActivatedRoute` service to access these parameters in components.
+- Use paramMap when you expect the same component to load with different parameters (e.g., /user/1 → /user/2).
+- snapshot - One-time read - Component won't be reused
+- paramMap - Observable for param changes - Component reused for new params
+----
+### 📌 Question 51: What is canActivate and canDeactivate in Angular?
+
+#### ✅ Answer:
+- Angular provides **route guards** to control access to certain routes. The two most commonly used guards are:
+
+- `canActivate` – controls **if a route can be activated**
+- Used to **prevent unauthorized access** to a route unless certain conditions are met (e.g., authentication, roles).
+- Only allow logged-in users to visit the `/dashboard` route.
+
+- `canDeactivate` – controls **if a route can be exited**
+- Used to prevent accidental navigation away from a route when a form is dirty or changes are unsaved.
+
+----
+### 📌 Question 52: What is a resolver in Angular routing?
+#### ✅ Answer:
+
+- A **resolver** in Angular is a service that **pre-fetches data before a route is activated**. It ensures that the component has all the necessary data when it loads, improving the user experience and avoiding flickers or loading states.
+- To load data **before** navigating to a route.
+- Prevent showing components with incomplete or missing data.
+- Centralize route-based data fetching logic.
+
+----
+### 📌 Question 53: What is lazy loading in Angular?
+
+#### ✅ Answer:
+
+- **Lazy Loading** in Angular is a technique where **feature modules are loaded** only when they are required, rather than at the initial application load.
+- Reducing the initial bundle size.
+- Improving app performance and load time.
+- Organizing code in a modular way
+
+----
+### 📌 Question 54: How do you implement lazy loading in Angular?
+
+#### ✅ Answer:
+- Instead of loading everything in **AppModule**, you create feature modules and configure them to load dynamically using **loadChildren**.
+- Create a Feature Module cmd command
+
+  `ng generate module products --route products --module app.module`
+
+  ```
+  ts
+  const routes: Routes = [
+  {
+    path: 'products',
+    loadChildren: () =>
+      import('./products/products.module').then(m => m.ProductsModule)
+  },
+  { path: '', redirectTo: 'home', pathMatch: 'full' }
+  ];
+
+  ```
+----
+### 📌 Question 55: What is tree shaking in Angular?
+
+#### ✅ Answer:
+Tree shaking is a **build optimization technique** that removes unused code during the production build process.
+- Angular uses **Webpack and ES2015 modules** to perform tree shaking.
+- It improves performance by reducing **bundle size**.
+- Automatically done when using **ng build --prod**.
+----
+
+### 📌 Question 56: What is Webpack and how does Angular use it?
+
+#### ✅ Answer:
+
+  - Webpack is a powerful module bundler for JavaScript applications. It takes your app’s files and dependencies, transforms them, and bundles them into static assets (like JS, CSS, HTML) for deployment.
+ - When we run ` ng build` 
+ Angular CLI:
+- Uses Webpack config under the hood
+- Compiles .ts files to .js
+- Applies AOT, minification, and optimization
+- Generates main.js, polyfills.js, runtime.js, etc.
+
+
+----
+### 📌 Question 57: What is Service Worker in Angular and how is it used?
+
+#### ✅ Answer:
+A Service Worker in Angular is a script that runs in the background, separate from the main browser thread, and enables progressive web app (PWA) features such as:
+- Offline support
+- Background sync
+- Push notifications
+- Caching static and dynamic assets
+- Angular provides built-in support for service workers through the @angular/service-worker package.
+----
+
+### 📌 Question 58 : How do you implement server-side rendering (SSR) in Angular?
+
+#### ✅ Answer:
+Server-Side Rendering (SSR) in Angular means rendering your Angular application on the server instead of the browser. This improves:
+  - SEO (Search Engine Optimization)
+  - Faster initial page load
+  - Better performance on slow networks
+  - Angular uses a platform called Angular Universal to implement SSR.
+  - `ng add @nguniversal/express-engine `
+----
+### 📌 Question 59 : What is Angular Universal?
+
+#### ✅ Answer:
+- Angular Universal is a technology provided by Angular that enables Server-Side Rendering (SSR) of Angular applications. 
+- It allows your Angular app to be rendered on the server (Node.js) and then delivered to the browser as a fully rendered HTML page.
+
+----
+
+### 📌 Question 60: What is HttpClient in Angular?
+
+#### ✅ Answer:
+- **HttpClient** is a service provided by Angular’s @angular/common/http package that allows you to **make HTTP requests (GET, POST, PUT, DELETE, etc.)** to interact with backend APIs or remote servers.
+
+It is **based on Observables from RxJS**, making it easy to handle asynchronous operations like data fetching, error handling, retries, and transformations.
+
+
+----
+### 📌 Question 61 : How do you make an HTTP GET request in Angular?
+
+#### ✅ Answer:
+To make an HTTP `GET` request in Angular, you use the `HttpClient` service provided by the `@angular/common/http` module. This allows your app to **retrieve data from a RESTful API**.
+  ```
+  ts
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>('https://api.example.com/users').pipe(
+      catchError(error => {
+        console.error('Error:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+  ```
+----
+### 📌 Question 62 : How do you make an HTTP POST request in Angular?
+
+#### ✅ Answer:
+- To make an `HTTP POST` request in Angular, use the `HttpClient` service from the `@angular/common/http package`. A POST request is used to **send data to a server**, typically for creating a new resource.
+  ```
+  const headers = new HttpHeaders({ 'Authorization': 'Bearer token' });
+  this.http.post('url', body, { headers });
+
+  ```
+----
+### 📌 Question 63 : How do you handle HTTP errors in Angular?
+
+#### ✅ Answer:
+  - In Angular, you handle HTTP errors using the HttpClient service along with RxJS operators like catchError() inside .pipe().
+  - This allows you to catch and respond to errors such as:
+  - 404 Not Found
+  - 500 Internal Server Error
+  -  0 Network Error
+  -  Unauthorized (401), Forbidden (403), etc.
+```
+    @Injectable()
+    export class ErrorInterceptor implements HttpInterceptor {
+      intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        return next.handle(req).pipe(
+          catchError((err: HttpErrorResponse) => {
+            alert('Something went wrong!');
+            return throwError(() => err);
+          })
+        );
+      }
+    }
+
+    providers: [
+      { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+    ]
+
+```
+
+| Tool / Concept       | Description                                         |
+|----------------------|-----------------------------------------------------|
+| `catchError()`       | RxJS operator for catching and managing HTTP errors |
+| `HttpErrorResponse`  | Angular's error object containing status, message   |
+| `throwError()`       | Returns an Observable that emits an error           |
+| `retry()` / `of()`   | Retries the request or provides a fallback value    |
+| `Interceptors`       | Centralized, app-wide error handling mechanism      |
+
+
+----
+### 📌 Question 64: How do you use interceptors for HTTP requests?
+
+#### ✅ Answer:
+An **HTTP interceptor** is a service that implements the `HttpInterceptor` interface and allows you to:
+- Modify **outgoing requests** (e.g., add auth tokens)
+- Handle **incoming responses** (e.g., log or transform responses)
+- Handle **errors globally**
+----
+### 📌 Question 65 : How do you use async/await with HttpClient in Angular? 
+
+#### ✅ Answer:
+- In Angular, the HttpClient methods (get(), post(), etc.) return Observables, not Promises.
+- you can still use async/await by converting the Observable to a Promise using the .toPromise() method (deprecated) or better.
+
+    ```
+    import { HttpClient } from '@angular/common/http';
+  import { Injectable } from '@angular/core';
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class DataService {
+    constructor(private http: HttpClient) {}
+
+    async fetchData(): Promise<any> {
+      try {
+        const response = await firstValueFrom(
+          this.http.get('https://api.example.com/data')
+        );
+        console.log('Data:', response);
+        return response;
+      } catch (error) {
+        console.error('Error:', error);
+        throw error;
+      }
+    }
+    ```
+----
+### 📌 Question 66 : What is the difference between HttpClient and Fetch API?
+
+#### ✅ Answer:
+
+| Feature / Aspect         | **HttpClient (Angular)**                                      | **Fetch API (JavaScript)**                             |
+|--------------------------|---------------------------------------------------------------|--------------------------------------------------------|
+| 📚 Module                | `@angular/common/http`                                        | Built-in in browsers (ES6+)                            |
+| 🔁 Return Type           | `Observable`                                                  | `Promise`                                              |
+| ⚙️ Error Handling         | Via RxJS `catchError()`                                       | Only throws on network errors                          |
+| 🎯 Status Handling       | Handles all status codes via error/response object            | Must check `response.ok` or `status` manually          |
+| 🧠 TypeScript Support    | Strong TypeScript integration                                 | Needs manual typing                                    |
+| 🧩 Interceptors Support  | ✅ Yes (for tokens, errors, logging)                           | ❌ No built-in support                                 |
+| 🚀 Features              | Auto JSON parsing, headers, retry, progress tracking          | Manual JSON parsing, header setup                      |
+| 🧪 Testing               | Easy to mock in Angular unit tests                            | Requires manual mocks                                  |
+| 🔄 Cancellation          | Built-in via RxJS `unsubscribe()`                             | Use `AbortController`                                  |
+| ♻️ Reusability & DI      | Injectable and testable Angular service                       | Needs custom functions or classes                      |
+
+----
+### 📌 Question 67 : What are interceptors in Angular?
+
+#### ✅ Answer:
+
+- Interceptors in Angular are special services that implement the HttpInterceptor interface and allow you to intercept and modify HTTP requests and responses globally.
+  
+  They are part of Angular's HttpClient module and are commonly used to:
+  - Add headers (e.g., authentication tokens)
+  - Log requests/responses
+  - Handle errors globally
+
+  - Modify outgoing/incoming data
+----
+
+### 📌 Question 68 : How do you implement interceptors?
+
+#### ✅ Answer:
+----
+### 📌 Question 69: What are some uses of interceptors, and can we provide multiple interceptors?
+
+#### ✅ Answer:
+----
+### 📌 Question 70: What is RxJs and why is it needed?
+
+#### ✅ Answer:
+----
+### 📌 Question 71: What are observables and observers?
+
+#### ✅ Answer:
+----
+### 📌 Question 72: What is a stream in RxJs?
+
+#### ✅ Answer:
+----
+### 📌 Question 73: What is the use of subscribe in RxJs?
+
+#### ✅ Answer:
+----
+### 📌 Question 74: How do you unsubscribe from a stream?
+
+#### ✅ Answer:
+----
+### 📌 Question 75: What are operators in RxJs?
+
+#### ✅ Answer:
+----
+### 📌 Question 76: Where have you used RxJs in Angular?
+
+#### ✅ Answer:
+----
+### 📌 Question 77: Differentiate between RxJs and Promises.
+
+#### ✅ Answer:
+----
+### 📌 Question 78: How do you install RxJs?
+
+#### ✅ Answer:
+----
+### 📌 Question 79: Why is RxJs called push/reactive and not pull/imperative?
+
+#### ✅ Answer:
+----
+### 📌 Question 80: Name some RxJs operators.
+
+#### ✅ Answer:
+----
+### 📌 Question 81 : What is the difference between BehaviorSubject and Subject in RxJS?
+
+#### ✅ Answer:
+----
+### 📌 Question 82: How can you optimize an Angular application’s performance?
+
+#### ✅ Answer:
+----
+### 📌 Question 83: What is the need for Angular CLI?
+
+#### ✅ Answer:
+----
+### 📌 Question 84: Why do we need ViewChild and ViewChildren in Angular?
+
+#### ✅ Answer:
+----
+### 📌 Question 85: Explain ContentChild and ContentChildren
+
+#### ✅ Answer:
+----
+### 📌 Question 86: Differentiate between ViewChild, ViewChildren, ContentChild, and ContentChildren.
+
+#### ✅ Answer:
+----
+### 📌 Question 87: What is { static: true } in ViewChild?
+
+#### ✅ Answer:
+----
+### 📌 Question 88: How do you pass data between components?
+
+#### ✅ Answer:
+----
+### 📌 Question 89: How do you implement HTTP in Angular?
+
+#### ✅ Answer:
+----
+### 📌 Question 90: What is a wildcard route in Angular?
+
+#### ✅ Answer:
+----
+### 📌 Question 91 : What is a resolver in Angular routing?
+
+#### ✅ Answer:
+----
+### 📌 Question 92 : Why is the node_modules folder important?
+
+#### ✅ Answer:
+----
+### 📌 Question 93 : What is package.json and package-lock.json?
+
+#### ✅ Answer:
+----
+### 📌 Question 94 : What is TypeScript?
+
+#### ✅ Answer:
+----
+### 📌 Question 95 : What is Node.js?
+
+#### ✅ Answer:
+----
+### 📌 Question 96 : What is NPM?
+
+#### ✅ Answer:
+----
+### 📌 Question 97 : What is content projection in Angular?
+
+#### ✅ Answer:
+----
+### 📌 Question 98 : When would you use content projection?
+
+#### ✅ Answer:
+----
+### 📌 Question 99 : 9.Explain content projection slots in Angular.
+
+#### ✅ Answer:
+----
+### 📌 Question 100 : What is module fedration
+
+#### ✅ Answer:
+----
+
+### 📌 Question 101 : How angular application works index to main.ts to app-module
+
+#### ✅ Answer:
+----
+
+
+
+
 
