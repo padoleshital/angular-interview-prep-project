@@ -1309,50 +1309,132 @@ An **HTTP interceptor** is a service that implements the `HttpInterceptor` inter
 
   - Modify outgoing/incoming data
 ----
-
 ### 📌 Question 68 : How do you implement interceptors?
-
 #### ✅ Answer:
+
+    ng generate service interceptors/auth
 ----
 ### 📌 Question 69: What are some uses of interceptors, and can we provide multiple interceptors?
 
 #### ✅ Answer:
+
+  
+Angular interceptors are powerful tools for handling HTTP requests and responses globally. Below are common and practical use cases where interceptors are highly useful in real-world applications.
+
+
+| Use Case               | Description                                                                 |
+|------------------------|-----------------------------------------------------------------------------|
+| 🔐 **Authentication**   | Add JWT or API token to request headers automatically.                     |
+| ❗ **Global Error Handling** | Catch and handle all HTTP errors (401, 500, etc.) in one place.             |
+| 🧾 **Logging**          | Log every outgoing request or incoming response for debugging and auditing. |
+| 🌐 **Set Base URLs**     | Prepend a base URL to all outgoing requests (e.g., `https://api.example.com`). |
+| ⏱️ **Loading Indicator** | Trigger loading spinners or progress bars on HTTP start/stop.              |
+| 🌍 **Localization**      | Add language headers like `Accept-Language` for internationalization (i18n). |
+| ♻️ **Retry Failed Requests** | Automatically retry failed HTTP requests using RxJS `retry()` operator.   |
+| 🔐 **Refresh Token**     | Automatically detect expired access tokens and refresh them using refresh tokens. |
+
+
+## 🔗 Related Topics
+
+- [Creating Interceptors](#)
+- [Registering Multiple Interceptors](#)
+- [RxJS Operators for Error Handling](#)
+- [HTTPClient in Angular](#)
+
+
+> 📘 Tip: Use `multi: true` while registering interceptors in `AppModule` to chain multiple interceptors together.
 ----
-### 📌 Question 70: What is RxJs and why is it needed?
+### 📌 Question 70 : What is RxJs and why is it needed?
 
 #### ✅ Answer:
+JavaScript is single-threaded and asynchronous operations (e.g. API calls, user input, timers) need to be handled without blocking the UI.
+
+| Need                         | How RxJS Helps                                                                 |
+|------------------------------|----------------------------------------------------------------------------------|
+| ⏱️ **Handle async data**       | Observables emit data over time like Promises, but with more capabilities.     |
+| 💥 **Manage multiple events**  | Combine, debounce, retry, cancel, or throttle event streams easily.             |
+| 🔗 **Chain operations**        | Use operators like `map`, `filter`, `mergeMap`, `switchMap` to transform streams. |
+| 🚀 **Simplify Angular features** | Angular forms, HTTP requests, state management, and routing all use RxJS.       |
+| ❌ **Cancel subscriptions**    | Observables can be unsubscribed to avoid memory leaks or cancel requests.      |
+
 ----
+
 ### 📌 Question 71: What are observables and observers?
 
 #### ✅ Answer:
+- An Observable is a representation of any stream of data over time (e.g., HTTP responses, user input, timers).
+-Sends data (produces stream)
+- It is lazy: it doesn’t start producing data until someone subscribes.
+- An Observer is an object that defines how to react to values delivered by the Observable. It has up to three callbacks
+
+- next(value) → when a value is emitted
+- error(err) → when an error occurs
+- complete() → when the stream finishes
 ----
 ### 📌 Question 72: What is a stream in RxJs?
 
 #### ✅ Answer:
+- A stream is essentially a collection of values over time, emitted by an Observable.
+
+- In RxJS (Reactive Extensions for JavaScript), a stream is a sequence of ongoing events ordered in time, which can be observed and reacted to.
 ----
 ### 📌 Question 73: What is the use of subscribe in RxJs?
 
 #### ✅ Answer:
+
+- subscribe() connects an Observer to an Observable so that the Observer can receive data, handle errors, and know when the stream completes.
+
+- Observables are lazy — they don’t run until subscribe() is called.
 ----
 ### 📌 Question 74: How do you unsubscribe from a stream?
 
 #### ✅ Answer:
+- To stop listening to an Observable, you need to unsubscribe — this prevents memory leaks and stops receiving emitted values.
+- Using take(n) or takeUntil() operator.
+- If you're using async pipe, Angular automatically unsubscribes for you.
+
+
 ----
 ### 📌 Question 75: What are operators in RxJs?
 
 #### ✅ Answer:
+- There are two type
+1. Pipeable Operators - Used inside .pipe() to transform the stream -map, filter, mergeMap, take, catchError
+2. Creation Operators  - Create new Observables - of, from, interval, timer
 ----
 ### 📌 Question 76: Where have you used RxJs in Angular?
 
 #### ✅ Answer:
+- In Angular, RxJS is used everywhere — because Angular is built around reactive programming. Here's where and how you typically use it.
+- in form, HTTP, component, routing, event handling etc
 ----
+
 ### 📌 Question 77: Differentiate between RxJs and Promises.
 
 #### ✅ Answer:
+
+| Feature | RxJS (Observables) | Promises |
+|--------|---------------------|----------|
+| 🔁 **Multiple Values** | Yes (stream of values) | No (single value) |
+| ⏱️ **Lazy Execution** | Yes (starts on `subscribe()`) | Yes (starts on creation) |
+| ❌ **Cancelable** | Yes (`unsubscribe()`) | No |
+| 🧰 **Operators Support** | Yes (`map`, `filter`, `switchMap`, etc.) | No (only `then`, `catch`, `finally`) |
+| 🕒 **Time-Based Handling** | Easy (`debounceTime`, `interval`, etc.) | Difficult (manual `setTimeout`) |
+| 🔄 **Reusability** | Can be multicasted/shared | One-time use |
+| ⚡ **Integration in Angular** | Deep (`HttpClient`, `Forms`, etc.) | Minimal |
+| 📤 **Push vs Pull** | Push (reactive) | Pull (imperative) |
+
+- Use Promises for simple, one-time async operations.
+- Use RxJS Observables for complex, multi-value, or reactive use cases — especially in Angular.
+
 ----
 ### 📌 Question 78: How do you install RxJs?
 
 #### ✅ Answer:
+- For any JavaScript or TypeScript project
+ `npm install rxjs`
+- install via CDN
+- If you're using Angular, RxJS is pre-installed when you create a project using the Angular CL 
 ----
 ### 📌 Question 79: Why is RxJs called push/reactive and not pull/imperative?
 
@@ -1361,93 +1443,191 @@ An **HTTP interceptor** is a service that implements the `HttpInterceptor` inter
 ### 📌 Question 80: Name some RxJs operators.
 
 #### ✅ Answer:
+ - `Map`, `pluck`, `of`, `from`, `interval`, `take`, `fromEvent`, `debounceTime`, `flat`, `Filter`, `SwitchMap`, `MargeMap`, `SwitchMap`
 ----
-### 📌 Question 81 : What is the difference between BehaviorSubject and Subject in RxJS?
 
+### 📌 Question 81 : What is the difference between BehaviorSubject and Subject in RxJS?
 #### ✅ Answer:
+- **Subject**: 
+A `Subject` is a multicast observable that can be subscribed to by multiple observers. 
+
+- It acts as both an observable and an observer, meaning you can subscribe to it to receive values and also push values to it using its `next()` method.
+
+- When a `Subject` emits a new value, all of its subscribed observers will receive that value.
+
+- 2. **BehaviorSubject**: 
+- A `BehaviorSubject` is a type of `Subject` that has a notion of “current value”.
+
+- It maintains and emits the latest value to any new subscribers. When a `BehaviorSubject` is created, it requires an initial value. 
+
+- Any subscriber that subscribes to a `BehaviorSubject` will immediately receive the current value or the latest emitted value.
+
+
+
 ----
 ### 📌 Question 82: How can you optimize an Angular application’s performance?
 
 #### ✅ Answer:
+-  Use OnPush Change Detection - Best for performance-critical or static components
+- Lazy Loading Modules - Load features only when needed, reducing initial load time.
+- Use Pure Pipes - Pure pipes only run when inputs change — avoid recalculating unnecessarily.
+- Avoid Memory Leaks with unsubscribe() -Always unsubscribe from Observables to prevent memory leaks
+- Use trackBy in *ngFor = - Improves DOM performance by preventing full re-rendering.
+- Minify and Compress Bundles - production build.
+- Use async Pipe in Templates - Automatically subscribes and unsubscribes from Observables.
+- Avoid Complex Logic in Templates - do not use logic in Templates  
+
 ----
 ### 📌 Question 83: What is the need for Angular CLI?
 
 #### ✅ Answer:
+- The Angular CLI (Command Line Interface) is a powerful tool that simplifies the development process
+- Using CLI reducing 
+- Quickly creates a ready-to-run Angular app also generate component , directive, service, using command .
+- Use ng serve to run a development server with live reloading.
+- Installs and updates required npm packages easily.
 ----
 ### 📌 Question 84: Why do we need ViewChild and ViewChildren in Angular?
 
 #### ✅ Answer:
+`ViewChild` and `ViewChildren` are decorators used to **access DOM elements, components, or directives from a component's template**.
+- `@ViewChild` 
+    ViewChild Access a single element or component from the view.
+- `@ViewChildren` 
+    ViewChildren allows you to access a QueryList(Multiple Element) of elements for batch operations.
+- Best used after the view has initialized (ngAfterViewInit lifecycle hook).
+- They are essential for direct communication between `parent and child components`, or for template manipulation in advanced UI scenarios.
+
 ----
 ### 📌 Question 85: Explain ContentChild and ContentChildren
 
 #### ✅ Answer:
+- @ContentChild and @ContentChildren are Angular decorators used to access projected content that is passed into a component via <ng-content>.
+
+- They allow the parent component to interact with content projected from outside, such as child components or template references use `ngAfterContentInit()`.
+
+- They’re useful when building flexible and reusable UI components that accept dynamic content from their parent.
+- `@ContentChild` - Access a single projected element/component
+- `@ContentChildren` - Access multiple projected elements/components.
 ----
 ### 📌 Question 86: Differentiate between ViewChild, ViewChildren, ContentChild, and ContentChildren.
 
 #### ✅ Answer:
+
+| Decorator         | Description                                                 | Access Scope         | Returns         | Lifecycle Hook         |
+|-------------------|-------------------------------------------------------------|-----------------------|------------------|-------------------------|
+| `@ViewChild`      | Accesses a single DOM element, directive, or component      | **Component's own view** | ElementRef / Component | `ngAfterViewInit()`     |
+| `@ViewChildren`   | Accesses multiple DOM elements, directives, or components   | **Component's own view** | QueryList        | `ngAfterViewInit()`     |
+| `@ContentChild`   | Accesses a single projected content from `<ng-content>`     | **Projected content**     | ElementRef / Component | `ngAfterContentInit()`  |
+| `@ContentChildren`| Accesses multiple projected elements from `<ng-content>`    | **Projected content**     | QueryList        | `ngAfterContentInit()`  |
+
 ----
 ### 📌 Question 87: What is { static: true } in ViewChild?
 
 #### ✅ Answer:
+    `@ViewChild('myElement', { static: true }) myElement!: ElementRef;`
+- { static: true } - The element/component is available immediately after ngOnInit(). Use when the queried element is not inside an *ngIf, *ngFor, or other structural directive.
+- { static: false }  - The element/component becomes available after ngAfterViewInit(). Use when the element is inside a structural directive (e.g. *ngIf, *ngFor).
 ----
 ### 📌 Question 88: How do you pass data between components?
 
 #### ✅ Answer:
+- Data sharing between components is a fundamental concept that allows components to interact. Depending on the relationship between components.
+-  Parent => child = `@Input`
+-  child => Parent = `@Output`
+- Sibling Components = Shared Service with `Subject/BehaviorSubject`
+- Unrelated Components = Shared Service or `NgRx/Signals (Angular 17+)`
 ----
 ### 📌 Question 89: How do you implement HTTP in Angular?
 
 #### ✅ Answer:
+- Angular provides a built-in **HTTP client module** (HttpClient) to make HTTP requests to back-end APIs. 
+- It supports **GET, POST, PUT, DELETE, PATCH**, and more — all based on Observables (RxJS).
+
 ----
-### 📌 Question 90: What is a wildcard route in Angular?
+### 📌 Question 90 : Why is the node_modules folder important?
 
 #### ✅ Answer:
+
+| Reason                       | Description |
+|------------------------------|-------------|
+| 📚 **Contains Dependencies** | Stores all packages defined in `package.json` (like Angular, RxJS, TypeScript, etc.). |
+| 🔗 **Handles Nested Dependencies** | Installs not just direct dependencies but also their own dependencies recursively. |
+| 🧱 **Needed to Run & Build** | The Angular CLI, TypeScript compiler, and build tools rely on the code within `node_modules`. |
+| 🧪 **Development Tools** | Tools like Jest, Karma, ESLint, and TypeScript are executed from this folder. |
+| 🔧 **Required for IDE Support** | Features like IntelliSense, autocompletion, and linting in your IDE depend on libraries from `node_modules`. |
+
 ----
-### 📌 Question 91 : What is a resolver in Angular routing?
+### 📌 Question 91 : What is package.json and package-lock.json?
 
 #### ✅ Answer:
+- **package.json** - Defines the project metadata, dependencies, and scripts. It's the main configuration file for your project
+- **package-lock.json** - The package-lock.json file locks the exact version of every installed package (including sub-dependencies), ensuring consistent installs across environments.
 ----
-### 📌 Question 92 : Why is the node_modules folder important?
+### 📌 Question 92 : What is TypeScript?
 
 #### ✅ Answer:
+- TypeScript is an open-source superset of JavaScript developed by Microsoft. 
+- It adds static typing and other powerful features to JavaScript, making it more suitable for large-scale, enterprise-level applications — such as Angular projects.
 ----
-### 📌 Question 93 : What is package.json and package-lock.json?
+### 📌 Question 93 : What is Node.js?
 
 #### ✅ Answer:
+- **Node.js** is a **runtime environment** that allows you to run **JavaScript on the server side** — outside of a browser. 
+- It is built on **Chrome’s V8 JavaScript engine** and is used to create **fast, scalable, and lightweight backend services**.
 ----
-### 📌 Question 94 : What is TypeScript?
+### 📌 Question 94 : What is NPM?
 
 #### ✅ Answer:
+- NPM stands for Node Package Manager — it is the default package manager for Node.js.
+- It helps you install, manage, and share reusable JavaScript code packages (called modules or dependencies) for your projects
 ----
-### 📌 Question 95 : What is Node.js?
+### 📌 Question 95 : What is content projection in Angular?
 
 #### ✅ Answer:
+- Content Projection in Angular is a powerful feature that allows you to insert external or dynamic content into a component’s template using the <ng-content> directive.
+
+- It enables you to build reusable, flexible components where the parent decides what content goes inside the child.
 ----
-### 📌 Question 96 : What is NPM?
+### 📌 Question 96 : When would you use content projection?
 
 #### ✅ Answer:
+- You would use Content Projection when you want to create a reusable, flexible, and dynamic UI component that allows the parent component to inject content into it.
+
 ----
-### 📌 Question 97 : What is content projection in Angular?
+### 📌 Question 98 : Explain content projection slots in Angular.
 
 #### ✅ Answer:
+- Content Projection Slots in Angular allow you to insert multiple different pieces of content into specific placeholders inside a component — by using <ng-content> with a select attribute.
+
+- This is called multi-slot content projection and is useful when you want to project different sections of content (like header, body, footer) into specific places within a component.
+
+
 ----
-### 📌 Question 98 : When would you use content projection?
+### 📌 Question 99 : What is module fedration
 
 #### ✅ Answer:
+- Module Federation is a feature introduced in Webpack 5 that allows multiple independently built and deployed applications (called micro frontends) to share code at runtime — including components, libraries, or entire features.
+
+- In short, it enables you to dynamically load code from another application without rebuilding or redeploying the host app.
+
+
 ----
-### 📌 Question 99 : 9.Explain content projection slots in Angular.
+
+### 📌 Question 100 : How angular application works index to main.ts to app-module
 
 #### ✅ Answer:
+
+    index.html
+      ⬇
+    <app-root>
+      ⬇
+    main.ts (bootstraps AppModule)
+      ⬇
+    AppModule (declares AppComponent)
+      ⬇
+    AppComponent (renders HTML + children)
 ----
-### 📌 Question 100 : What is module fedration
-
-#### ✅ Answer:
-----
-
-### 📌 Question 101 : How angular application works index to main.ts to app-module
-
-#### ✅ Answer:
-----
-
 
 
 

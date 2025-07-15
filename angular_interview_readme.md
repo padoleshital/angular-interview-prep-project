@@ -206,6 +206,9 @@ import { Injectable } from '@angular/core';
 - Route parameters: `ActivatedRoute`
 - Lazy Loading with `loadChildren`
 
+📚 References
+Angular Route Guards Documentation
+
 ---
 
 ## 7. Forms in Angular
